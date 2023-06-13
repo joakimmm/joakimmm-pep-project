@@ -4,9 +4,15 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import java.util.List;
 import Service.Service;
+import Model.Account;
+
 
 public class SocialMediaController {
     private final Service service;
+
+    public SocialMediaController() {
+        this.service = new Service();
+    }
 
     public SocialMediaController(Service service) {
         this.service = service;
@@ -44,7 +50,8 @@ public class SocialMediaController {
         boolean success = service.register(username, password);
 
         if (success) {
-            context.status(201).result("Registration successful");
+            context.status(201).json(service.register(username,password));
+            
         } else {
             context.status(400).result("Username already exists");
         }
@@ -70,7 +77,7 @@ public class SocialMediaController {
 
     private void createMessageHandler(Context context) {
         String token = context.header("Authorization");
-        String text = context.formParam("text");
+        String text = context.body();
 
         if (token == null || text == null) {
             context.status(400).result("Authorization token and message text are required");
@@ -80,7 +87,7 @@ public class SocialMediaController {
         boolean success = service.createMessage(token, text);
 
         if (success) {
-            context.status(201).result("Message created");
+            context.status(200).json("Message created");
         } else {
             context.status(401).result("Invalid token");
         }

@@ -1,7 +1,10 @@
 package Service;
 
 import DAO.AccountDAO;
+import DAO.AccountDAOImpl;
 import DAO.MessageDAO;
+import DAO.MessageDAOImpl;
+
 import java.util.List;
 
 public class Service {
@@ -11,6 +14,11 @@ public class Service {
     public Service(AccountDAO accountDAO, MessageDAO messageDAO) {
         this.accountDAO = accountDAO;
         this.messageDAO = messageDAO;
+    }
+
+    public Service() {
+        this.accountDAO = new AccountDAOImpl(); 
+        this.messageDAO = new MessageDAOImpl(); 
     }
 
     public boolean register(String username, String password) {

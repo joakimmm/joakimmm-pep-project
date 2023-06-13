@@ -59,4 +59,5 @@ public class MessageDAOImpl implements MessageDAO {
         // Not implemented in this example
         return "message_id";
     }
+
 }

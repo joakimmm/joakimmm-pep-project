@@ -13,11 +13,14 @@ public class AccountDAOImpl implements AccountDAO {
     @Override
     public boolean createAccount(String username, String password) {
         if (accounts.containsKey(username)) {
-            return false; // Username already exists
+            return false; 
         }
-
+        if (password.length() <= 4){
+            return false;
+        }
+            
         accounts.put(username, password);
-        return true; // Account created successfully
+        return true; 
     }
 
     @Override
