@@ -3,6 +3,11 @@ package Controller;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import java.util.List;
+
+import org.h2.util.json.JSONObject;
+
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
+
 import Service.Service;
 import Model.Account;
 
@@ -43,14 +48,15 @@ public class SocialMediaController {
         String password = context.formParam("password");
 
         if (username == null || password == null) {
-            context.status(400).result("Username and password are required");
+            context.status(400);
             return;
         }
 
         boolean success = service.register(username, password);
 
         if (success) {
-            context.status(201).json(service.register(username,password));
+
+            context.status(200).json(service.getAccountId(username));
             
         } else {
             context.status(400).result("Username already exists");

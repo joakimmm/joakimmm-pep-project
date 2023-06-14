@@ -22,10 +22,15 @@ public class Service {
     }
 
     public boolean register(String username, String password) {
-        
+
         return accountDAO.createAccount(username, password);
     }
 
+    public int getAccountId(String username) {
+
+        return accountDAO.getAccountIdByToken(username);
+    }
+    
     public String login(String username, String password) {
         
         return accountDAO.authenticate(username, password);

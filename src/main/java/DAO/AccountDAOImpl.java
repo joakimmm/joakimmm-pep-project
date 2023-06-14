@@ -5,20 +5,19 @@ import java.util.Map;
 public class AccountDAOImpl implements AccountDAO {
 
     private final Map<String, String> accounts;
-
+    private int nextAccountId;
+    
     public AccountDAOImpl() {
         this.accounts = new HashMap<>();
+        this.nextAccountId = 1;
     }
 
     @Override
     public boolean createAccount(String username, String password) {
-        if (accounts.containsKey(username)) {
+        if (accounts.containsKey(username) ||password.length() <= 4 ) {
             return false; 
         }
-        if (password.length() <= 4){
-            return false;
-        }
-            
+
         accounts.put(username, password);
         return true; 
     }
@@ -28,16 +27,16 @@ public class AccountDAOImpl implements AccountDAO {
         if (accounts.containsKey(username)) {
             String storedPassword = accounts.get(username);
             if (storedPassword.equals(password)) {
-                return generateToken(); // Authentication successful
+                return generateToken(); 
             }
         }
-        return null; // Authentication failed
+        return null; 
     }
 
     @Override
     public int getAccountIdByToken(String token) {
         
-        return 0;
+        return nextAccountId++;
     }
 
     
