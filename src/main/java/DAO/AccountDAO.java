@@ -2,8 +2,6 @@ package DAO;
 
 import Model.Account;
 
-import java.sql.SQLException;
-
 public interface AccountDAO<T> {
     Account createAccount(T t);
     Account login(T t);

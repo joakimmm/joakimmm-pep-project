@@ -2,10 +2,7 @@ package DAO;
 
 import Model.Account;
 import Util.ConnectionUtil;
-
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AccountDAOImpl implements AccountDAO<Account> {
 

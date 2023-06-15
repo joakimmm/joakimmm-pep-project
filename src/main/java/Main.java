@@ -1,8 +1,5 @@
-import DAO.AccountDAO;
-import DAO.MessageDAO;
 import DAO.AccountDAOImpl;
 import DAO.MessageDAOImpl;
-import Model.Account;
 import Service.Service;
 import Controller.SocialMediaController;
 import io.javalin.Javalin;
