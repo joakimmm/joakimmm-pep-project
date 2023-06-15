@@ -1,12 +1,10 @@
 package Controller;
 
+import Model.Message;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
 import java.util.List;
-
-import org.h2.util.json.JSONObject;
-
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 
 import Service.Service;
 import Model.Account;
@@ -26,6 +24,7 @@ public class SocialMediaController {
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
+     *
      * @return a Javalin app object which defines the behavior of the Javalin controller.
      */
     public Javalin startAPI() {
@@ -38,124 +37,86 @@ public class SocialMediaController {
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
         app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
         app.patch("/messages/{message_id}", this::updateMessageByIdHandler);
-        app.get("/accounts/{message_id}/messages", this::getMessagesByUserHandler);
+        app.get("/accounts/{account_id}/messages", this::getMessagesByUserIdHandler);
 
         return app;
     }
 
     private void registerHandler(Context context) {
-        String username = context.formParam("username");
-        String password = context.formParam("password");
+        Account account = context.bodyAsClass(Account.class);
 
-        if (username == null || password == null) {
-            context.status(400);
-            return;
-        }
-
-        boolean success = service.register(username, password);
-
-        if (success) {
-
-            context.status(200).json(service.getAccountId(username));
-            
+        account = this.service.register(account);
+        if (account != null) {
+            context.status(200).json(account);
         } else {
-            context.status(400).result("Username already exists");
+            context.status(400);
         }
     }
 
     private void loginHandler(Context context) {
-        String username = context.formParam("username");
-        String password = context.formParam("password");
+        Account account = context.bodyAsClass(Account.class);
 
-        if (username == null || password == null) {
-            context.status(400).result("Username and password are required");
-            return;
-        }
-
-        String token = service.login(username, password);
-
-        if (token != null) {
-            context.status(200).result(token);
+        account = this.service.authenticate(account);
+        if (account != null) {
+            context.status(200).json(account);
         } else {
-            context.status(401).result("Invalid username or password");
+            context.status(401);
         }
     }
 
     private void createMessageHandler(Context context) {
-        String token = context.header("Authorization");
-        String text = context.body();
+        Message message = context.bodyAsClass(Message.class);
 
-        if (token == null || text == null) {
-            context.status(400).result("Authorization token and message text are required");
-            return;
-        }
-
-        boolean success = service.createMessage(token, text);
-
-        if (success) {
-            context.status(200).json("Message created");
+        message = this.service.createMessage(message);
+        if (message != null) {
+            context.status(200).json(message);
         } else {
-            context.status(401).result("Invalid token");
+            context.status(400);
         }
     }
 
     private void getAllMessagesHandler(Context context) {
-        List<String> messages = service.getAllMessages();
-
-        context.json(messages);
+        List<Message> messages = service.getAllMessages();
+        context.status(200).json(messages);
     }
 
     private void getMessageByIdHandler(Context context) {
-        String messageId = context.pathParam("message_id");
-
-        String message = service.getMessageById(messageId);
-
-        if (message != null) {
-            context.json(message);
+        int messageId = Integer.parseInt(context.pathParam("message_id"));
+        Message message = service.getMessageById(messageId);
+        if (message == null) {
+            context.status(200);
         } else {
-            context.status(404).result("Message not found");
+            context.status(200).json(message);
         }
     }
 
     private void deleteMessageByIdHandler(Context context) {
-        String messageId = context.pathParam("message_id");
-
-        boolean success = service.deleteMessageById(messageId);
-
-        if (success) {
-            context.status(204).result("Message deleted");
+        int messageId = Integer.parseInt(context.pathParam("message_id"));
+        Message message = service.deleteMessageById(messageId);
+        if (message == null) {
+            context.status(200);
         } else {
-            context.status(404).result("Message not found");
+            context.status(200).json(message);
         }
     }
 
     private void updateMessageByIdHandler(Context context) {
-        String messageId = context.pathParam("message_id");
-        String newText = context.formParam("text");
+        int messageId = Integer.parseInt(context.pathParam("message_id"));
+        String newText = context.bodyAsClass(Message.class).getMessage_text();
+        Message message = service.updateMessageById(messageId, newText);
 
-        if (newText == null) {
-            context.status(400).result("New message text is required");
-            return;
-        }
-
-        boolean success = service.updateMessageById(messageId, newText);
-
-        if (success) {
-            context.status(200).result("Message updated");
+        if (message != null) {
+            context.status(200).json(message);
         } else {
-            context.status(404).result("Message not found");
+            context.status(400);
         }
     }
 
-    private void getMessagesByUserHandler(Context context) {
-        String accountId = context.pathParam("account_id");
+    private void getMessagesByUserIdHandler(Context context) {
+        int accountId = Integer.parseInt(context.pathParam("account_id"));
 
-        List<String> messages = service.getMessagesByUser(accountId);
+        List<Message> messages = service.getMessagesByUserId(accountId);
 
-        if (messages != null) {
-            context.json(messages);
-        } else {
-            context.status(404).result("Account not found");
-        }
+        context.status(200).json(messages);
     }
 }

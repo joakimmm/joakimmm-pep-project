@@ -1,16 +1,18 @@
 package DAO;
+import Model.Message;
+
 import java.util.List;
 
-public interface MessageDAO {
-    boolean createMessage(int accountId, String text);
+public interface MessageDAO<T> {
+    Message createMessage(T t);
 
-    List<String> getAllMessages();
+    List<Message> getAllMessages();
 
-    String getMessageById(String messageId);
+    Message getMessageById(int messageId);
 
-    boolean deleteMessageById(String messageId);
+    Message deleteMessageById(int messageId);
 
-    boolean updateMessageById(String messageId, String text);
+    Message updateMessageById(int messageId, String text);
 
-    List<String> getMessagesByUser(String accountId);
+    List<Message> getMessagesByUserId(int accountId);
 }

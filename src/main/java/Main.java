@@ -1,7 +1,8 @@
 import DAO.AccountDAO;
 import DAO.MessageDAO;
 import DAO.AccountDAOImpl;
-import DAO.MessageDAOImpl; 
+import DAO.MessageDAOImpl;
+import Model.Account;
 import Service.Service;
 import Controller.SocialMediaController;
 import io.javalin.Javalin;
@@ -12,8 +13,8 @@ import io.javalin.Javalin;
  */
 public class Main {
     public static void main(String[] args) {
-        AccountDAO accountDao = new AccountDAOImpl(); 
-        MessageDAO messageDao = new MessageDAOImpl();
+        AccountDAOImpl accountDao = new AccountDAOImpl();
+        MessageDAOImpl messageDao = new MessageDAOImpl();
 
         Service service = new Service(accountDao, messageDao);
         SocialMediaController controller = new SocialMediaController(service);

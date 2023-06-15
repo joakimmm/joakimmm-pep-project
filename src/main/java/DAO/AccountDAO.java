@@ -1,10 +1,15 @@
 package DAO;
 
-public interface AccountDAO {
-    boolean createAccount(String username, String password);
+import Model.Account;
 
-    String authenticate(String username, String password);
+import java.sql.SQLException;
 
-    int getAccountIdByToken(String token);
+public interface AccountDAO<T> {
+    Account createAccount(T t);
+    Account login(T t);
+
+    boolean usernameIsRegistered(String username);
+
+    boolean idIsRegistered(int id);
 }
 
