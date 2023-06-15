@@ -5,7 +5,6 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.util.List;
-
 import Service.Service;
 import Model.Account;
 
